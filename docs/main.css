@@ -8,41 +8,40 @@
 }
 
 body {
-  padding: 20px;
   font-family: sans-serif;
+  padding: 20px;
+}
+
+.main-input-row {
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 label {
   display: inline-block;
+
   width: 200px;
   height: var(--row-height);
+
+  font-size: var(--font-size);
   text-align: center;
+  line-height: var(--row-height);
+
   margin: 0 20px;
   border: 1px solid black;
-  line-height: var(--row-height);
-  font-size: var(--font-size);
 }
 
-input[type=radio] {
-  width: 36px;
-  height: 36px;
-}
+  .live-input label {
+    background-color: #CCFFCC;
+  }
 
 input[type=number] {
-  font-size: var(--font-size);
   width: 200px;
-  padding: 10px;
   height: var(--row-height);
-}
-
-.main-input-row {
-  margin-bottom: 10px;
+  font-size: var(--font-size);
   padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.live-input label {
-  background-color: #CCFFCC;
 }
