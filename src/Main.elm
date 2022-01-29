@@ -33,23 +33,23 @@ gcd a b =
 type InputType
   = Cells
   | Media
-  | Total
+  | Ratio
 
 allInputTypes : List InputType
 allInputTypes =
-  [ Cells, Media, Total ]
+  [ Cells, Media, Ratio ]
 
 inputTypeToString : InputType -> String
 inputTypeToString it =
   case it of
     Cells -> "Cells"
     Media -> "Media"
-    Total -> "Total"
+    Ratio -> "1:X"
 
 type alias Model =
   { cells : String
   , media : String
-  , total : String
+  , ratio : String
   , free : InputType
   }
 
@@ -58,14 +58,14 @@ getInput it m =
   case it of
     Cells -> m.cells
     Media -> m.media
-    Total -> m.total
+    Ratio -> m.ratio
 
 setInput : InputType -> String -> Model -> Model
 setInput it s m =
   case it of
     Cells -> { m | cells = s }
     Media -> { m | media = s }
-    Total -> { m | total = s }
+    Ratio -> { m | ratio = s }
 
 -- Update
 
@@ -94,46 +94,40 @@ refresh : Model -> Model
 refresh model =
   case model.free of
     Cells ->
-      case (String.toInt model.total, String.toInt model.media) of
-        (Just t, Just m) ->
-          let v = t - m in
-          setInput
-            Cells
-            (if v > 0 then String.fromInt v else "")
-            model
+      case (String.toFloat model.media, String.toFloat model.ratio) of
+        (Just m, Just r) ->
+          setInput Cells (String.fromFloat <| m / (r - 1)) model
 
         _ ->
           setInput Cells "" model
 
     Media ->
-      case (String.toInt model.total, String.toInt model.cells) of
-        (Just t, Just c) ->
-          let v = t - c in
-          setInput
-            Media
-            (if v > 0 then String.fromInt v else "")
-            model
+      case (String.toFloat model.cells, String.toFloat model.ratio) of
+        (Just c, Just r) ->
+          setInput Media (String.fromFloat <| c * (r - 1)) model
 
         _ ->
           setInput Media "" model
 
-    Total ->
-      case (String.toInt model.cells, String.toInt model.media) of
+    Ratio ->
+      case (String.toFloat model.cells, String.toFloat model.media) of
         (Just c, Just m) ->
-          setInput Total (String.fromInt (c + m)) model
+          setInput Ratio (String.fromFloat <| (m + c) / c) model
 
         _ ->
-          setInput Total "" model
+          setInput Ratio "" model
 
 dilutionRatio : Model -> Maybe (Int, Int)
 dilutionRatio model =
-  case (String.toInt model.cells, String.toInt model.total) of
-    (Just c, Just t) ->
-      if t <= c then
-        Nothing
+  case (String.toInt model.cells, String.toInt model.media) of
+    (Just c, Just m) ->
+      if c > 0 && m > 0 then
+        let num = c in
+        let den = m + c in
+        let g = gcd num den in
+        Just (num // g, den // g)
       else
-        let g = gcd c t in
-        Just (c // g, t // g)
+        Nothing
 
     _ ->
       Nothing
@@ -203,7 +197,7 @@ view model =
 
 init : {} -> (Model, Cmd Msg)
 init _ =
-  ( { cells = "", media = "", total = "", free = Total }
+  ( { cells = "", media = "", ratio = "", free = Ratio }
   , Cmd.none
   )
 

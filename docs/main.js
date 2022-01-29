@@ -5144,18 +5144,19 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$Total = {$: 'Total'};
+var $author$project$Main$Ratio = {$: 'Ratio'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{cells: '', free: $author$project$Main$Total, media: '', total: ''},
+		{cells: '', free: $author$project$Main$Ratio, media: '', ratio: ''},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$Cells = {$: 'Cells'};
 var $author$project$Main$Media = {$: 'Media'};
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$Main$setInput = F3(
 	function (it, s, m) {
 		switch (it.$) {
@@ -5170,58 +5171,57 @@ var $author$project$Main$setInput = F3(
 			default:
 				return _Utils_update(
 					m,
-					{total: s});
+					{ratio: s});
 		}
 	});
+var $elm$core$String$toFloat = _String_toFloat;
 var $author$project$Main$refresh = function (model) {
 	var _v0 = model.free;
 	switch (_v0.$) {
 		case 'Cells':
 			var _v1 = _Utils_Tuple2(
-				$elm$core$String$toInt(model.total),
-				$elm$core$String$toInt(model.media));
+				$elm$core$String$toFloat(model.media),
+				$elm$core$String$toFloat(model.ratio));
 			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
-				var t = _v1.a.a;
-				var m = _v1.b.a;
-				var v = t - m;
+				var m = _v1.a.a;
+				var r = _v1.b.a;
 				return A3(
 					$author$project$Main$setInput,
 					$author$project$Main$Cells,
-					(v > 0) ? $elm$core$String$fromInt(v) : '',
+					$elm$core$String$fromFloat(m / (r - 1)),
 					model);
 			} else {
 				return A3($author$project$Main$setInput, $author$project$Main$Cells, '', model);
 			}
 		case 'Media':
 			var _v2 = _Utils_Tuple2(
-				$elm$core$String$toInt(model.total),
-				$elm$core$String$toInt(model.cells));
+				$elm$core$String$toFloat(model.cells),
+				$elm$core$String$toFloat(model.ratio));
 			if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
-				var t = _v2.a.a;
-				var c = _v2.b.a;
-				var v = t - c;
+				var c = _v2.a.a;
+				var r = _v2.b.a;
 				return A3(
 					$author$project$Main$setInput,
 					$author$project$Main$Media,
-					(v > 0) ? $elm$core$String$fromInt(v) : '',
+					$elm$core$String$fromFloat(c * (r - 1)),
 					model);
 			} else {
 				return A3($author$project$Main$setInput, $author$project$Main$Media, '', model);
 			}
 		default:
 			var _v3 = _Utils_Tuple2(
-				$elm$core$String$toInt(model.cells),
-				$elm$core$String$toInt(model.media));
+				$elm$core$String$toFloat(model.cells),
+				$elm$core$String$toFloat(model.media));
 			if ((_v3.a.$ === 'Just') && (_v3.b.$ === 'Just')) {
 				var c = _v3.a.a;
 				var m = _v3.b.a;
 				return A3(
 					$author$project$Main$setInput,
-					$author$project$Main$Total,
-					$elm$core$String$fromInt(c + m),
+					$author$project$Main$Ratio,
+					$elm$core$String$fromFloat((m + c) / c),
 					model);
 			} else {
-				return A3($author$project$Main$setInput, $author$project$Main$Total, '', model);
+				return A3($author$project$Main$setInput, $author$project$Main$Ratio, '', model);
 			}
 	}
 };
@@ -5248,7 +5248,7 @@ var $author$project$Main$update = F2(
 		}
 	});
 var $author$project$Main$allInputTypes = _List_fromArray(
-	[$author$project$Main$Cells, $author$project$Main$Media, $author$project$Main$Total]);
+	[$author$project$Main$Cells, $author$project$Main$Media, $author$project$Main$Ratio]);
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5277,16 +5277,18 @@ var $author$project$Main$gcd = F2(
 var $author$project$Main$dilutionRatio = function (model) {
 	var _v0 = _Utils_Tuple2(
 		$elm$core$String$toInt(model.cells),
-		$elm$core$String$toInt(model.total));
+		$elm$core$String$toInt(model.media));
 	if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 		var c = _v0.a.a;
-		var t = _v0.b.a;
-		if (_Utils_cmp(t, c) < 1) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var g = A2($author$project$Main$gcd, c, t);
+		var m = _v0.b.a;
+		if ((c > 0) && (m > 0)) {
+			var num = c;
+			var den = m + c;
+			var g = A2($author$project$Main$gcd, num, den);
 			return $elm$core$Maybe$Just(
-				_Utils_Tuple2((c / g) | 0, (t / g) | 0));
+				_Utils_Tuple2((num / g) | 0, (den / g) | 0));
+		} else {
+			return $elm$core$Maybe$Nothing;
 		}
 	} else {
 		return $elm$core$Maybe$Nothing;
@@ -5347,7 +5349,7 @@ var $author$project$Main$getInput = F2(
 			case 'Media':
 				return m.media;
 			default:
-				return m.total;
+				return m.ratio;
 		}
 	});
 var $elm$html$Html$input = _VirtualDom_node('input');
@@ -5358,7 +5360,7 @@ var $author$project$Main$inputTypeToString = function (it) {
 		case 'Media':
 			return 'Media';
 		default:
-			return 'Total';
+			return '1:X';
 	}
 };
 var $elm$html$Html$label = _VirtualDom_node('label');
