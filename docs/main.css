@@ -12,12 +12,19 @@ body {
   padding: 20px;
 }
 
-.main-input-row {
+body > div {
   display: flex;
+  justify-content: center;
+}
+
+.main-input-row {
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
 
   justify-content: center;
   margin-bottom: 10px;
+  margin: 0 30px;
   padding: 10px;
 }
 
@@ -31,7 +38,7 @@ label {
   text-align: center;
   line-height: var(--row-height);
 
-  margin: 0 20px;
+  margin: 20px 0;
   border: 1px solid black;
 }
 
