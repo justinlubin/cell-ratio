@@ -50,7 +50,7 @@ type alias Model =
   { cells : String
   , media : String
   , ratio : String
-  , free : InputType
+  , history : List InputType
   }
 
 getInput : InputType -> Model -> String
@@ -67,33 +67,62 @@ setInput it s m =
     Media -> { m | media = s }
     Ratio -> { m | ratio = s }
 
+addToHistory : InputType -> Model -> Model
+addToHistory it m =
+  { m | history = it :: List.filter ((/=) it) m.history }
+
+liveInput : Model -> Maybe InputType
+liveInput m =
+  case m.history of
+    [] ->
+      Nothing
+
+    [_] ->
+      Nothing
+
+    [Cells, Media] -> Just Ratio
+    [Media, Cells] -> Just Ratio
+
+    [Cells, Ratio] -> Just Media
+    [Ratio, Cells] -> Just Media
+
+    [Media, Ratio] -> Just Cells
+    [Ratio, Media] -> Just Cells
+
+    [_, _, _] ->
+      m.history
+        |> List.reverse
+        |> List.head
+
+    _ ->
+      Nothing
+
 -- Update
 
 type Msg
   = Input InputType String
-  | FreeSelection InputType
-  | NoOp
+  | Focus InputType
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Input it s ->
-      ( refresh (setInput it s model)
+      ( liveUpdate (setInput it s model)
       , Cmd.none
       )
 
-    FreeSelection it ->
-      ( refresh { model | free = it }
+    Focus it ->
+      ( addToHistory it model
       , Cmd.none
       )
 
-    NoOp ->
-      (model, Cmd.none)
+liveUpdate : Model -> Model
+liveUpdate model =
+  case liveInput model of
+    Nothing ->
+      model
 
-refresh : Model -> Model
-refresh model =
-  case model.free of
-    Cells ->
+    Just Cells ->
       case (String.toFloat model.media, String.toFloat model.ratio) of
         (Just m, Just r) ->
           setInput Cells (String.fromFloat <| m / (r - 1)) model
@@ -101,7 +130,7 @@ refresh model =
         _ ->
           setInput Cells "" model
 
-    Media ->
+    Just Media ->
       case (String.toFloat model.cells, String.toFloat model.ratio) of
         (Just c, Just r) ->
           setInput Media (String.fromFloat <| c * (r - 1)) model
@@ -109,7 +138,7 @@ refresh model =
         _ ->
           setInput Media "" model
 
-    Ratio ->
+    Just Ratio ->
       case (String.toFloat model.cells, String.toFloat model.media) of
         (Just c, Just m) ->
           setInput Ratio (String.fromFloat <| (m + c) / c) model
@@ -141,60 +170,39 @@ viewInput model it =
   let
     its =
       inputTypeToString it
-
-    selected =
-      model.free == it
   in
   div
     [ classList
         [ ("main-input-row", True)
-        , ("selected", selected)
+        , ("live-input", liveInput model == Just it)
         ]
     ]
-    [ input
-        [ type_ "radio"
-        , name "main-input"
-        , checked (model.free == it)
-        , onInput (\_ -> FreeSelection it)
-        , id its
-        ]
-        []
-    , label
-        [ for its
-        ]
-        [ text its
-        ]
+    [ label
+        [ for its ]
+        [ text its ]
     , input
-        [ type_ "number"
+        [ id its
+        , type_ "number"
+        , step "any"
         , onInput (Input it)
-        , disabled selected
+        , onFocus (Focus it)
         , value (getInput it model)
-        , id (its ++ "-text")
         ]
         []
     ]
 
 view : Model -> Html Msg
 view model =
-  div
-    [ id "main"
-    ] <|
-    [ div
-        [ class "main-inputs" ]
-        (List.map (viewInput model) allInputTypes)
-    , div
-        [ id "output"
-        ]
-        [ text <|
-            getInput (model.free) model
-        ]
-    ]
+  div [] <|
+    List.map
+      (viewInput model)
+      allInputTypes
 
 -- Main
 
 init : {} -> (Model, Cmd Msg)
 init _ =
-  ( { cells = "", media = "", ratio = "", free = Ratio }
+  ( { cells = "", media = "", ratio = "", history = [] }
   , Cmd.none
   )
 

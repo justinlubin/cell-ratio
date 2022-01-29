@@ -35,19 +35,6 @@ input[type=number] {
   height: var(--row-height);
 }
 
-.selected label {
-  background-color: #CCFFCC;
-  width: 420px;
-}
-
-.selected input[type=number] {
-  display: none;
-}
-
-:not(.selected) > input[type=number] {
-  background-color: #FFFFAA;
-}
-
 .main-input-row {
   margin-bottom: 10px;
   padding: 10px;
@@ -55,14 +42,6 @@ input[type=number] {
   align-items: center;
 }
 
-#main {
-  display: flex;
-  align-items: center;
-}
-
-#output {
-  flex: 1;
-  margin-left: 10px;
-  font-size: 150px;
-  text-align: center;
+.live-input label {
+  background-color: #CCFFCC;
 }

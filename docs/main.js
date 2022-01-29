@@ -5144,19 +5144,127 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$Ratio = {$: 'Ratio'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{cells: '', free: $author$project$Main$Ratio, media: '', ratio: ''},
+		{cells: '', history: _List_Nil, media: '', ratio: ''},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Main$addToHistory = F2(
+	function (it, m) {
+		return _Utils_update(
+			m,
+			{
+				history: A2(
+					$elm$core$List$cons,
+					it,
+					A2(
+						$elm$core$List$filter,
+						$elm$core$Basics$neq(it),
+						m.history))
+			});
+	});
 var $author$project$Main$Cells = {$: 'Cells'};
 var $author$project$Main$Media = {$: 'Media'};
+var $author$project$Main$Ratio = {$: 'Ratio'};
 var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Main$liveInput = function (m) {
+	var _v0 = m.history;
+	_v0$9:
+	while (true) {
+		if (!_v0.b) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			if (!_v0.b.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				if (!_v0.b.b.b) {
+					switch (_v0.a.$) {
+						case 'Cells':
+							switch (_v0.b.a.$) {
+								case 'Media':
+									var _v1 = _v0.a;
+									var _v2 = _v0.b;
+									var _v3 = _v2.a;
+									return $elm$core$Maybe$Just($author$project$Main$Ratio);
+								case 'Ratio':
+									var _v7 = _v0.a;
+									var _v8 = _v0.b;
+									var _v9 = _v8.a;
+									return $elm$core$Maybe$Just($author$project$Main$Media);
+								default:
+									break _v0$9;
+							}
+						case 'Media':
+							switch (_v0.b.a.$) {
+								case 'Cells':
+									var _v4 = _v0.a;
+									var _v5 = _v0.b;
+									var _v6 = _v5.a;
+									return $elm$core$Maybe$Just($author$project$Main$Ratio);
+								case 'Ratio':
+									var _v13 = _v0.a;
+									var _v14 = _v0.b;
+									var _v15 = _v14.a;
+									return $elm$core$Maybe$Just($author$project$Main$Cells);
+								default:
+									break _v0$9;
+							}
+						default:
+							switch (_v0.b.a.$) {
+								case 'Cells':
+									var _v10 = _v0.a;
+									var _v11 = _v0.b;
+									var _v12 = _v11.a;
+									return $elm$core$Maybe$Just($author$project$Main$Media);
+								case 'Media':
+									var _v16 = _v0.a;
+									var _v17 = _v0.b;
+									var _v18 = _v17.a;
+									return $elm$core$Maybe$Just($author$project$Main$Cells);
+								default:
+									break _v0$9;
+							}
+					}
+				} else {
+					if (!_v0.b.b.b.b) {
+						var _v19 = _v0.b;
+						var _v20 = _v19.b;
+						return $elm$core$List$head(
+							$elm$core$List$reverse(m.history));
+					} else {
+						break _v0$9;
+					}
+				}
+			}
+		}
+	}
+	return $elm$core$Maybe$Nothing;
+};
 var $author$project$Main$setInput = F3(
 	function (it, s, m) {
 		switch (it.$) {
@@ -5175,80 +5283,89 @@ var $author$project$Main$setInput = F3(
 		}
 	});
 var $elm$core$String$toFloat = _String_toFloat;
-var $author$project$Main$refresh = function (model) {
-	var _v0 = model.free;
-	switch (_v0.$) {
-		case 'Cells':
-			var _v1 = _Utils_Tuple2(
-				$elm$core$String$toFloat(model.media),
-				$elm$core$String$toFloat(model.ratio));
-			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
-				var m = _v1.a.a;
-				var r = _v1.b.a;
-				return A3(
-					$author$project$Main$setInput,
-					$author$project$Main$Cells,
-					$elm$core$String$fromFloat(m / (r - 1)),
-					model);
-			} else {
-				return A3($author$project$Main$setInput, $author$project$Main$Cells, '', model);
-			}
-		case 'Media':
-			var _v2 = _Utils_Tuple2(
-				$elm$core$String$toFloat(model.cells),
-				$elm$core$String$toFloat(model.ratio));
-			if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
-				var c = _v2.a.a;
-				var r = _v2.b.a;
-				return A3(
-					$author$project$Main$setInput,
-					$author$project$Main$Media,
-					$elm$core$String$fromFloat(c * (r - 1)),
-					model);
-			} else {
-				return A3($author$project$Main$setInput, $author$project$Main$Media, '', model);
-			}
-		default:
-			var _v3 = _Utils_Tuple2(
-				$elm$core$String$toFloat(model.cells),
-				$elm$core$String$toFloat(model.media));
-			if ((_v3.a.$ === 'Just') && (_v3.b.$ === 'Just')) {
-				var c = _v3.a.a;
-				var m = _v3.b.a;
-				return A3(
-					$author$project$Main$setInput,
-					$author$project$Main$Ratio,
-					$elm$core$String$fromFloat((m + c) / c),
-					model);
-			} else {
-				return A3($author$project$Main$setInput, $author$project$Main$Ratio, '', model);
-			}
+var $author$project$Main$liveUpdate = function (model) {
+	var _v0 = $author$project$Main$liveInput(model);
+	if (_v0.$ === 'Nothing') {
+		return model;
+	} else {
+		switch (_v0.a.$) {
+			case 'Cells':
+				var _v1 = _v0.a;
+				var _v2 = _Utils_Tuple2(
+					$elm$core$String$toFloat(model.media),
+					$elm$core$String$toFloat(model.ratio));
+				if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
+					var m = _v2.a.a;
+					var r = _v2.b.a;
+					return A3(
+						$author$project$Main$setInput,
+						$author$project$Main$Cells,
+						$elm$core$String$fromFloat(m / (r - 1)),
+						model);
+				} else {
+					return A3($author$project$Main$setInput, $author$project$Main$Cells, '', model);
+				}
+			case 'Media':
+				var _v3 = _v0.a;
+				var _v4 = _Utils_Tuple2(
+					$elm$core$String$toFloat(model.cells),
+					$elm$core$String$toFloat(model.ratio));
+				if ((_v4.a.$ === 'Just') && (_v4.b.$ === 'Just')) {
+					var c = _v4.a.a;
+					var r = _v4.b.a;
+					return A3(
+						$author$project$Main$setInput,
+						$author$project$Main$Media,
+						$elm$core$String$fromFloat(c * (r - 1)),
+						model);
+				} else {
+					return A3($author$project$Main$setInput, $author$project$Main$Media, '', model);
+				}
+			default:
+				var _v5 = _v0.a;
+				var _v6 = _Utils_Tuple2(
+					$elm$core$String$toFloat(model.cells),
+					$elm$core$String$toFloat(model.media));
+				if ((_v6.a.$ === 'Just') && (_v6.b.$ === 'Just')) {
+					var c = _v6.a.a;
+					var m = _v6.b.a;
+					return A3(
+						$author$project$Main$setInput,
+						$author$project$Main$Ratio,
+						$elm$core$String$fromFloat((m + c) / c),
+						model);
+				} else {
+					return A3($author$project$Main$setInput, $author$project$Main$Ratio, '', model);
+				}
+		}
 	}
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		switch (msg.$) {
-			case 'Input':
-				var it = msg.a;
-				var s = msg.b;
-				return _Utils_Tuple2(
-					$author$project$Main$refresh(
-						A3($author$project$Main$setInput, it, s, model)),
-					$elm$core$Platform$Cmd$none);
-			case 'FreeSelection':
-				var it = msg.a;
-				return _Utils_Tuple2(
-					$author$project$Main$refresh(
-						_Utils_update(
-							model,
-							{free: it})),
-					$elm$core$Platform$Cmd$none);
-			default:
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		if (msg.$ === 'Input') {
+			var it = msg.a;
+			var s = msg.b;
+			return _Utils_Tuple2(
+				$author$project$Main$liveUpdate(
+					A3($author$project$Main$setInput, it, s, model)),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			var it = msg.a;
+			return _Utils_Tuple2(
+				A2($author$project$Main$addToHistory, it, model),
+				$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$allInputTypes = _List_fromArray(
 	[$author$project$Main$Cells, $author$project$Main$Media, $author$project$Main$Ratio]);
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$Focus = function (a) {
+	return {$: 'Focus', a: a};
+};
+var $author$project$Main$Input = F2(
+	function (a, b) {
+		return {$: 'Input', a: a, b: b};
+	});
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5258,48 +5375,6 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$Main$getInput = F2(
-	function (it, m) {
-		switch (it.$) {
-			case 'Cells':
-				return m.cells;
-			case 'Media':
-				return m.media;
-			default:
-				return m.ratio;
-		}
-	});
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Main$FreeSelection = function (a) {
-	return {$: 'FreeSelection', a: a};
-};
-var $author$project$Main$Input = F2(
-	function (a, b) {
-		return {$: 'Input', a: a, b: b};
-	});
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
@@ -5314,8 +5389,19 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
-var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
+var $author$project$Main$getInput = F2(
+	function (it, m) {
+		switch (it.$) {
+			case 'Cells':
+				return m.cells;
+			case 'Media':
+				return m.media;
+			default:
+				return m.ratio;
+		}
+	});
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $author$project$Main$inputTypeToString = function (it) {
 	switch (it.$) {
@@ -5328,14 +5414,29 @@ var $author$project$Main$inputTypeToString = function (it) {
 	}
 };
 var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onFocus = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'focus',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 'MayStopPropagation', a: a};
 };
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -5363,11 +5464,15 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
+};
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$viewInput = F2(
 	function (model, it) {
-		var selected = _Utils_eq(model.free, it);
 		var its = $author$project$Main$inputTypeToString(it);
 		return A2(
 			$elm$html$Html$div,
@@ -5377,26 +5482,15 @@ var $author$project$Main$viewInput = F2(
 					_List_fromArray(
 						[
 							_Utils_Tuple2('main-input-row', true),
-							_Utils_Tuple2('selected', selected)
+							_Utils_Tuple2(
+							'live-input',
+							_Utils_eq(
+								$author$project$Main$liveInput(model),
+								$elm$core$Maybe$Just(it)))
 						]))
 				]),
 			_List_fromArray(
 				[
-					A2(
-					$elm$html$Html$input,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$type_('radio'),
-							$elm$html$Html$Attributes$name('main-input'),
-							$elm$html$Html$Attributes$checked(
-							_Utils_eq(model.free, it)),
-							$elm$html$Html$Events$onInput(
-							function (_v0) {
-								return $author$project$Main$FreeSelection(it);
-							}),
-							$elm$html$Html$Attributes$id(its)
-						]),
-					_List_Nil),
 					A2(
 					$elm$html$Html$label,
 					_List_fromArray(
@@ -5411,13 +5505,15 @@ var $author$project$Main$viewInput = F2(
 					$elm$html$Html$input,
 					_List_fromArray(
 						[
+							$elm$html$Html$Attributes$id(its),
 							$elm$html$Html$Attributes$type_('number'),
+							$elm$html$Html$Attributes$step('any'),
 							$elm$html$Html$Events$onInput(
 							$author$project$Main$Input(it)),
-							$elm$html$Html$Attributes$disabled(selected),
+							$elm$html$Html$Events$onFocus(
+							$author$project$Main$Focus(it)),
 							$elm$html$Html$Attributes$value(
-							A2($author$project$Main$getInput, it, model)),
-							$elm$html$Html$Attributes$id(its + '-text')
+							A2($author$project$Main$getInput, it, model))
 						]),
 					_List_Nil)
 				]));
@@ -5425,34 +5521,11 @@ var $author$project$Main$viewInput = F2(
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('main')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('main-inputs')
-					]),
-				A2(
-					$elm$core$List$map,
-					$author$project$Main$viewInput(model),
-					$author$project$Main$allInputTypes)),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id('output')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						A2($author$project$Main$getInput, model.free, model))
-					]))
-			]));
+		_List_Nil,
+		A2(
+			$elm$core$List$map,
+			$author$project$Main$viewInput(model),
+			$author$project$Main$allInputTypes));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{
