@@ -1,17 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Main</title>
-  <style>body { padding: 0; margin: 0; }</style>
-</head>
-
-<body>
-
-<pre id="elm"></pre>
-
-<script>
-try {
 (function(scope){
 'use strict';
 
@@ -4369,7 +4355,6 @@ function _Browser_load(url)
 		}
 	}));
 }
-var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
@@ -4476,6 +4461,7 @@ var $elm$core$Basics$add = _Basics_add;
 var $elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
+var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $elm$core$String$all = _String_all;
 var $elm$core$Basics$and = _Basics_and;
 var $elm$core$Basics$append = _Utils_append;
@@ -5157,70 +5143,223 @@ var $elm$core$Task$perform = F2(
 			$elm$core$Task$Perform(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
+var $elm$browser$Browser$element = _Browser_element;
+var $author$project$Main$Total = {$: 'Total'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$init = function (_v0) {
+	return _Utils_Tuple2(
+		{cells: '', free: $author$project$Main$Total, media: '', total: ''},
+		$elm$core$Platform$Cmd$none);
+};
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $elm$browser$Browser$sandbox = function (impl) {
-	return _Browser_element(
-		{
-			init: function (_v0) {
-				return _Utils_Tuple2(impl.init, $elm$core$Platform$Cmd$none);
-			},
-			subscriptions: function (_v1) {
-				return $elm$core$Platform$Sub$none;
-			},
-			update: F2(
-				function (msg, model) {
-					return _Utils_Tuple2(
-						A2(impl.update, msg, model),
-						$elm$core$Platform$Cmd$none);
-				}),
-			view: impl.view
-		});
+var $author$project$Main$Cells = {$: 'Cells'};
+var $author$project$Main$Media = {$: 'Media'};
+var $author$project$Main$setInput = F3(
+	function (it, s, m) {
+		switch (it.$) {
+			case 'Cells':
+				return _Utils_update(
+					m,
+					{cells: s});
+			case 'Media':
+				return _Utils_update(
+					m,
+					{media: s});
+			default:
+				return _Utils_update(
+					m,
+					{total: s});
+		}
+	});
+var $author$project$Main$refresh = function (model) {
+	var _v0 = model.free;
+	switch (_v0.$) {
+		case 'Cells':
+			var _v1 = _Utils_Tuple2(
+				$elm$core$String$toInt(model.total),
+				$elm$core$String$toInt(model.media));
+			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
+				var t = _v1.a.a;
+				var m = _v1.b.a;
+				return A3(
+					$author$project$Main$setInput,
+					$author$project$Main$Cells,
+					$elm$core$String$fromInt(t - m),
+					model);
+			} else {
+				return model;
+			}
+		case 'Media':
+			var _v2 = _Utils_Tuple2(
+				$elm$core$String$toInt(model.total),
+				$elm$core$String$toInt(model.cells));
+			if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
+				var t = _v2.a.a;
+				var c = _v2.b.a;
+				return A3(
+					$author$project$Main$setInput,
+					$author$project$Main$Media,
+					$elm$core$String$fromInt(t - c),
+					model);
+			} else {
+				return model;
+			}
+		default:
+			var _v3 = _Utils_Tuple2(
+				$elm$core$String$toInt(model.cells),
+				$elm$core$String$toInt(model.media));
+			if ((_v3.a.$ === 'Just') && (_v3.b.$ === 'Just')) {
+				var c = _v3.a.a;
+				var m = _v3.b.a;
+				return A3(
+					$author$project$Main$setInput,
+					$author$project$Main$Total,
+					$elm$core$String$fromInt(c + m),
+					model);
+			} else {
+				return model;
+			}
+	}
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'CellsInput') {
-			var s = msg.a;
-			return _Utils_update(
-				model,
-				{
-					cells: $elm$core$String$toInt(s)
-				});
-		} else {
-			var s = msg.a;
-			return _Utils_update(
-				model,
-				{
-					media: $elm$core$String$toInt(s)
-				});
+		switch (msg.$) {
+			case 'Input':
+				var it = msg.a;
+				var s = msg.b;
+				return _Utils_Tuple2(
+					$author$project$Main$refresh(
+						A3($author$project$Main$setInput, it, s, model)),
+					$elm$core$Platform$Cmd$none);
+			case 'FreeSelection':
+				var it = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{free: it}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$CellsInput = function (a) {
-	return {$: 'CellsInput', a: a};
-};
-var $author$project$Main$MediaInput = function (a) {
-	return {$: 'MediaInput', a: a};
+var $author$project$Main$allInputTypes = _List_fromArray(
+	[$author$project$Main$Cells, $author$project$Main$Media, $author$project$Main$Total]);
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Main$gcd = F2(
+	function (a, b) {
+		gcd:
+		while (true) {
+			if (!a) {
+				return b;
+			} else {
+				var $temp$a = A2($elm$core$Basics$modBy, a, b),
+					$temp$b = a;
+				a = $temp$a;
+				b = $temp$b;
+				continue gcd;
+			}
+		}
+	});
+var $author$project$Main$dilutionRatio = function (model) {
+	var _v0 = _Utils_Tuple2(
+		$elm$core$String$toInt(model.cells),
+		$elm$core$String$toInt(model.total));
+	if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
+		var c = _v0.a.a;
+		var t = _v0.b.a;
+		if (_Utils_cmp(t, c) < 1) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var g = A2($author$project$Main$gcd, c, t);
+			return $elm$core$Maybe$Just(
+				_Utils_Tuple2((c / g) | 0, (t / g) | 0));
+		}
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Main$big = function (s) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'font-size', '5em')
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(s)
-			]));
+var $author$project$Main$FreeSelection = function (a) {
+	return {$: 'FreeSelection', a: a};
 };
+var $author$project$Main$Input = F2(
+	function (a, b) {
+		return {$: 'Input', a: a, b: b};
+	});
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
+var $author$project$Main$getInput = F2(
+	function (it, m) {
+		switch (it.$) {
+			case 'Cells':
+				return m.cells;
+			case 'Media':
+				return m.media;
+			default:
+				return m.total;
+		}
+	});
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $author$project$Main$inputTypeToString = function (it) {
+	switch (it.$) {
+		case 'Cells':
+			return 'Cells';
+		case 'Media':
+			return 'Media';
+		default:
+			return 'Total';
+	}
+};
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -5255,147 +5394,127 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$Main$bigInput = function (msg) {
-	return A2(
-		$elm$html$Html$input,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$type_('number'),
-				$elm$html$Html$Events$onInput(msg),
-				A2($elm$html$Html$Attributes$style, 'font-size', '2em'),
-				A2($elm$html$Html$Attributes$style, 'width', '100%'),
-				A2($elm$html$Html$Attributes$style, 'display', 'block')
-			]),
-		_List_Nil);
-};
-var $elm$html$Html$b = _VirtualDom_node('b');
-var $author$project$Main$blab = function (s) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'margin-bottom', '20px')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$b,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(s)
-					]))
-			]));
-};
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$Main$gcd = F2(
-	function (a, b) {
-		gcd:
-		while (true) {
-			if (!a) {
-				return b;
-			} else {
-				var $temp$a = A2($elm$core$Basics$modBy, a, b),
-					$temp$b = a;
-				a = $temp$a;
-				b = $temp$b;
-				continue gcd;
-			}
-		}
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$Main$viewInput = F2(
+	function (model, it) {
+		var selected = _Utils_eq(model.free, it);
+		var its = $author$project$Main$inputTypeToString(it);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('main-input-row', true),
+							_Utils_Tuple2('selected', selected)
+						]))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('radio'),
+							$elm$html$Html$Attributes$name('main-input'),
+							$elm$html$Html$Attributes$checked(
+							_Utils_eq(model.free, it)),
+							$elm$html$Html$Events$onInput(
+							function (_v0) {
+								return $author$project$Main$FreeSelection(it);
+							}),
+							$elm$html$Html$Attributes$id(its)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$for(its)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(its)
+						])),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('number'),
+							$elm$html$Html$Events$onInput(
+							$author$project$Main$Input(it)),
+							$elm$html$Html$Attributes$disabled(selected),
+							$elm$html$Html$Attributes$value(
+							function () {
+								if (selected) {
+									var _v1 = $author$project$Main$dilutionRatio(model);
+									if (_v1.$ === 'Just') {
+										return A2($author$project$Main$getInput, it, model);
+									} else {
+										return '';
+									}
+								} else {
+									return A2($author$project$Main$getInput, it, model);
+								}
+							}()),
+							$elm$html$Html$Attributes$id(its + '-text')
+						]),
+					_List_Nil)
+				]));
 	});
-var $author$project$Main$dilutionRatio = function (model) {
-	var _v0 = _Utils_Tuple2(model.cells, model.media);
-	if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
-		var c = _v0.a.a;
-		var m = _v0.b.a;
-		var num = c;
-		var den = m + c;
-		var g = A2($author$project$Main$gcd, num, den);
-		return $elm$core$String$fromInt((num / g) | 0) + (':' + $elm$core$String$fromInt((den / g) | 0));
-	} else {
-		return '';
-	}
-};
-var $author$project$Main$lab = function (s) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'margin-bottom', '10px')
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(s)
-			]));
-};
-var $author$project$Main$row = $elm$html$Html$div(
-	_List_fromArray(
-		[
-			A2($elm$html$Html$Attributes$style, 'padding', '30px')
-		]));
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'font-size', '2em'),
-				A2($elm$html$Html$Attributes$style, 'font-family', 'sans-serif')
+				$elm$html$Html$Attributes$id('main')
 			]),
 		_List_fromArray(
 			[
-				$author$project$Main$row(
+				A2(
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$author$project$Main$lab('Cells:'),
-						$author$project$Main$bigInput($author$project$Main$CellsInput)
-					])),
-				$author$project$Main$row(
+						$elm$html$Html$Attributes$class('main-inputs')
+					]),
+				A2(
+					$elm$core$List$map,
+					$author$project$Main$viewInput(model),
+					$author$project$Main$allInputTypes)),
+				A2(
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$author$project$Main$lab('Media:'),
-						$author$project$Main$bigInput($author$project$Main$MediaInput)
-					])),
-				$author$project$Main$row(
+						$elm$html$Html$Attributes$id('dilution-ratio')
+					]),
 				_List_fromArray(
 					[
-						$author$project$Main$blab('Dilution ratio:'),
-						$author$project$Main$big(
-						$author$project$Main$dilutionRatio(model))
+						$elm$html$Html$text(
+						function () {
+							var _v0 = $author$project$Main$dilutionRatio(model);
+							if (_v0.$ === 'Just') {
+								var _v1 = _v0.a;
+								var left = _v1.a;
+								var right = _v1.b;
+								return $elm$core$String$fromInt(left) + (':' + $elm$core$String$fromInt(right));
+							} else {
+								return '';
+							}
+						}())
 					]))
 			]));
 };
-var $author$project$Main$main = $elm$browser$Browser$sandbox(
+var $author$project$Main$main = $elm$browser$Browser$element(
 	{
-		init: {cells: $elm$core$Maybe$Nothing, media: $elm$core$Maybe$Nothing},
+		init: $author$project$Main$init,
+		subscriptions: function (_v0) {
+			return $elm$core$Platform$Sub$none;
+		},
 		update: $author$project$Main$update,
 		view: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
-
-  var app = Elm.Main.init({ node: document.getElementById("elm") });
-}
-catch (e)
-{
-  // display initialization errors (e.g. bad flags, infinite recursion)
-  var header = document.createElement("h1");
-  header.style.fontFamily = "monospace";
-  header.innerText = "Initialization Error";
-  var pre = document.getElementById("elm");
-  document.body.insertBefore(header, pre);
-  pre.innerText = e;
-  throw e;
-}
-</script>
-
-</body>
-</html>
+	$elm$json$Json$Decode$succeed(
+		{}))(0)}});}(this));
