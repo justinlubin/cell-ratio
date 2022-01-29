@@ -117,6 +117,7 @@ refresh model =
         _ ->
           setInput Ratio "" model
 
+{-
 dilutionRatio : Model -> Maybe (Int, Int)
 dilutionRatio model =
   case (String.toInt model.cells, String.toInt model.media) of
@@ -131,6 +132,7 @@ dilutionRatio model =
 
     _ ->
       Nothing
+-}
 
 -- View
 
@@ -181,15 +183,10 @@ view model =
         [ class "main-inputs" ]
         (List.map (viewInput model) allInputTypes)
     , div
-        [ id "dilution-ratio"
+        [ id "output"
         ]
         [ text <|
-            case dilutionRatio model of
-              Just (left, right) ->
-                String.fromInt left ++ ":" ++ String.fromInt right
-
-              Nothing ->
-                ""
+            getInput (model.free) model
         ]
     ]
 

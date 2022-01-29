@@ -36,10 +36,15 @@ input[type=number] {
 }
 
 .selected label {
-  background-color: #FFFFAA;
+  background-color: #CCFFCC;
+  width: 420px;
 }
 
-:not(.selected)>  input[type=number] {
+.selected input[type=number] {
+  display: none;
+}
+
+:not(.selected) > input[type=number] {
   background-color: #FFFFAA;
 }
 
@@ -55,7 +60,7 @@ input[type=number] {
   align-items: center;
 }
 
-#dilution-ratio {
+#output {
   flex: 1;
   margin-left: 10px;
   font-size: 150px;

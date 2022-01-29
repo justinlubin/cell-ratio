@@ -5258,43 +5258,18 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$Main$gcd = F2(
-	function (a, b) {
-		gcd:
-		while (true) {
-			if (!a) {
-				return b;
-			} else {
-				var $temp$a = A2($elm$core$Basics$modBy, a, b),
-					$temp$b = a;
-				a = $temp$a;
-				b = $temp$b;
-				continue gcd;
-			}
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$getInput = F2(
+	function (it, m) {
+		switch (it.$) {
+			case 'Cells':
+				return m.cells;
+			case 'Media':
+				return m.media;
+			default:
+				return m.ratio;
 		}
 	});
-var $author$project$Main$dilutionRatio = function (model) {
-	var _v0 = _Utils_Tuple2(
-		$elm$core$String$toInt(model.cells),
-		$elm$core$String$toInt(model.media));
-	if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
-		var c = _v0.a.a;
-		var m = _v0.b.a;
-		if ((c > 0) && (m > 0)) {
-			var num = c;
-			var den = m + c;
-			var g = A2($author$project$Main$gcd, num, den);
-			return $elm$core$Maybe$Just(
-				_Utils_Tuple2((num / g) | 0, (den / g) | 0));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -5341,17 +5316,6 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 };
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
-var $author$project$Main$getInput = F2(
-	function (it, m) {
-		switch (it.$) {
-			case 'Cells':
-				return m.cells;
-			case 'Media':
-				return m.media;
-			default:
-				return m.ratio;
-		}
-	});
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $author$project$Main$inputTypeToString = function (it) {
 	switch (it.$) {
@@ -5481,22 +5445,12 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$id('dilution-ratio')
+						$elm$html$Html$Attributes$id('output')
 					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						function () {
-							var _v0 = $author$project$Main$dilutionRatio(model);
-							if (_v0.$ === 'Just') {
-								var _v1 = _v0.a;
-								var left = _v1.a;
-								var right = _v1.b;
-								return $elm$core$String$fromInt(left) + (':' + $elm$core$String$fromInt(right));
-							} else {
-								return '';
-							}
-						}())
+						A2($author$project$Main$getInput, model.free, model))
 					]))
 			]));
 };
