@@ -10,24 +10,6 @@ import Html.Events exposing (..)
 import Task
 import Dict exposing (Dict)
 
--- Helpers
-
-guard : (a -> Bool) -> Maybe a -> Maybe a
-guard pred mx =
-  case mx of
-    Just x ->
-      if pred x then Just x else Nothing
-
-    Nothing ->
-      Nothing
-
-gcd : Int -> Int -> Int
-gcd a b =
-  if a == 0 then
-    b
-  else
-    gcd (b |> modBy a) a
-
 -- Model
 
 type InputType
@@ -145,23 +127,6 @@ liveUpdate model =
 
         _ ->
           setInput Ratio "" model
-
-{-
-dilutionRatio : Model -> Maybe (Int, Int)
-dilutionRatio model =
-  case (String.toInt model.cells, String.toInt model.media) of
-    (Just c, Just m) ->
-      if c > 0 && m > 0 then
-        let num = c in
-        let den = m + c in
-        let g = gcd num den in
-        Just (num // g, den // g)
-      else
-        Nothing
-
-    _ ->
-      Nothing
--}
 
 -- View
 
