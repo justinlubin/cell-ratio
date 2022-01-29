@@ -83,10 +83,8 @@ update msg model =
       )
 
     FreeSelection it ->
-      ( { model | free = it }
-      , Cmd.none {- Task.attempt
-          (\_ -> NoOp)
-          (Browser.Dom.focus (inputTypeToString it ++ "-text")) -}
+      ( refresh { model | free = it }
+      , Cmd.none
       )
 
     NoOp ->
@@ -98,18 +96,26 @@ refresh model =
     Cells ->
       case (String.toInt model.total, String.toInt model.media) of
         (Just t, Just m) ->
-          setInput Cells (String.fromInt (t - m)) model
+          let v = t - m in
+          setInput
+            Cells
+            (if v > 0 then String.fromInt v else "")
+            model
 
         _ ->
-          model
+          setInput Cells "" model
 
     Media ->
       case (String.toInt model.total, String.toInt model.cells) of
         (Just t, Just c) ->
-          setInput Media (String.fromInt (t - c)) model
+          let v = t - c in
+          setInput
+            Media
+            (if v > 0 then String.fromInt v else "")
+            model
 
         _ ->
-          model
+          setInput Media "" model
 
     Total ->
       case (String.toInt model.cells, String.toInt model.media) of
@@ -117,7 +123,7 @@ refresh model =
           setInput Total (String.fromInt (c + m)) model
 
         _ ->
-          model
+          setInput Total "" model
 
 dilutionRatio : Model -> Maybe (Int, Int)
 dilutionRatio model =
@@ -166,16 +172,7 @@ viewInput model it =
         [ type_ "number"
         , onInput (Input it)
         , disabled selected
-        , value <|
-            if selected then
-              case dilutionRatio model of
-                Just _ ->
-                  getInput it model
-
-                _ ->
-                  ""
-            else
-              getInput it model
+        , value (getInput it model)
         , id (its ++ "-text")
         ]
         []

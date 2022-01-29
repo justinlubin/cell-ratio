@@ -5183,13 +5183,14 @@ var $author$project$Main$refresh = function (model) {
 			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
 				var t = _v1.a.a;
 				var m = _v1.b.a;
+				var v = t - m;
 				return A3(
 					$author$project$Main$setInput,
 					$author$project$Main$Cells,
-					$elm$core$String$fromInt(t - m),
+					(v > 0) ? $elm$core$String$fromInt(v) : '',
 					model);
 			} else {
-				return model;
+				return A3($author$project$Main$setInput, $author$project$Main$Cells, '', model);
 			}
 		case 'Media':
 			var _v2 = _Utils_Tuple2(
@@ -5198,13 +5199,14 @@ var $author$project$Main$refresh = function (model) {
 			if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
 				var t = _v2.a.a;
 				var c = _v2.b.a;
+				var v = t - c;
 				return A3(
 					$author$project$Main$setInput,
 					$author$project$Main$Media,
-					$elm$core$String$fromInt(t - c),
+					(v > 0) ? $elm$core$String$fromInt(v) : '',
 					model);
 			} else {
-				return model;
+				return A3($author$project$Main$setInput, $author$project$Main$Media, '', model);
 			}
 		default:
 			var _v3 = _Utils_Tuple2(
@@ -5219,7 +5221,7 @@ var $author$project$Main$refresh = function (model) {
 					$elm$core$String$fromInt(c + m),
 					model);
 			} else {
-				return model;
+				return A3($author$project$Main$setInput, $author$project$Main$Total, '', model);
 			}
 	}
 };
@@ -5236,9 +5238,10 @@ var $author$project$Main$update = F2(
 			case 'FreeSelection':
 				var it = msg.a;
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{free: it}),
+					$author$project$Main$refresh(
+						_Utils_update(
+							model,
+							{free: it})),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -5447,18 +5450,7 @@ var $author$project$Main$viewInput = F2(
 							$author$project$Main$Input(it)),
 							$elm$html$Html$Attributes$disabled(selected),
 							$elm$html$Html$Attributes$value(
-							function () {
-								if (selected) {
-									var _v1 = $author$project$Main$dilutionRatio(model);
-									if (_v1.$ === 'Just') {
-										return A2($author$project$Main$getInput, it, model);
-									} else {
-										return '';
-									}
-								} else {
-									return A2($author$project$Main$getInput, it, model);
-								}
-							}()),
+							A2($author$project$Main$getInput, it, model)),
 							$elm$html$Html$Attributes$id(its + '-text')
 						]),
 					_List_Nil)
